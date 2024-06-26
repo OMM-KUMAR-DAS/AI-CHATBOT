@@ -3,6 +3,7 @@ const Redis = require('redis');
 const subscriber = Redis.createClient();
 
 async function connectSubscriber() {
+    
 
 
 
@@ -13,12 +14,6 @@ async function connectSubscriber() {
         console.log("Successfully connected Subscriber to Redis");
 
         subscriber.subscribe(`userid:@john123`, (answer) => {
-
-
-
-            
-
-
             console.log(answer);
         });
 

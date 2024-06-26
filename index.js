@@ -13,12 +13,12 @@ const client= Redis.createClient()
 
 
 
-app.post('/getresponse',async(req,res)=>{
-
-
+app.get('/',async(req,res)=>{
+  
+    
     try{
 
-        const{userId,prompt}= req.body;
+        const{userId,prompt}= req.query;
 
 
 

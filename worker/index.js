@@ -29,7 +29,9 @@ async function publishtoPubSub(response) {
     try {
         const result = await model.generateContentStream(response.element);
 
-        for await (const chunk of result.stream) {
+        for await (const chunk of result.stream) 
+        
+        {
 
 
             const chunkText = chunk.text();

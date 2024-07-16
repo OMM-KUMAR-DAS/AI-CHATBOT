@@ -1,0 +1,1 @@
+Making a chatbot by integrating Gemini API and using Redis for Messaging Queue and PubSubs.Using websocket protocal for persistent connection between client and server for real time communication.Frontend using React js and Material UI

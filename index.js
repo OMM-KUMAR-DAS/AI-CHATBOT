@@ -1,75 +1,71 @@
-const express= require('express')
+const { WebSocketServer } = require('ws');
 
-const app= new express();
+const express = require('express');
 
-const bodyParser = require('body-parser')
+const Redis = require('redis');
 
-app.use(bodyParser.json())
+const app = express();
+
+const httpServer = app.listen(8080);
+
+const wss = new WebSocketServer({ server: httpServer });
+
+const client = Redis.createClient();
+
+wss.on('connection', async function connection(ws) {
+
+    const subscriber = Redis.createClient();
+
+    let currentUserid = null;
+
+   
+
+    ws.on('error', console.error);
+
+    ws.on('message', async function message(data) {
+
+        const messageObject = JSON.parse(data);
+
+        const { userid, prompt } = messageObject;
+
+        console.log(userid);
+
+        console.log(prompt);
+
+        currentUserid = userid;
+
+        await client.lPush('messages', JSON.stringify({ userid, prompt }));
+
+        if (currentUserid && !subscriber.isOpen) {
+
+            await subscriber.connect();
+
+            subscriber.subscribe(`Userid:${currentUserid}`, (message) => {
+
+                    ws.send(message);
+
+                
+            });
+        }
 
 
-const Redis= require('redis')
+    });
+   
+    ws.send("Hello guys ")
 
-const client= Redis.createClient()
+   
+});
 
+async function startRedis() {
+    try {
+        await client.connect();
 
+        console.log("Successfully connected to Redis");
 
-app.get('/',async(req,res)=>{
-  
-    
-    try{
+    } catch (err) {
 
-        const{userId,prompt}= req.query;
-
-
-
-        await client.lPush(`userid:${userId}`,prompt)
-
-
-
-        res.json({
-            success:true,
-            message:'Prompt pushed to queue'
-        })
-
-       
-
-        
-
-    }catch(err)
-    { 
-
-        res.json({
-
-            success:false,
-            error:err,
-            message:'Failed to Pushed to Redis-Queue'
-
-        })
-
+        console.log("Failed to connect to Redis due to -->", err);
     }
-})
-
-
-
-async function startServer()
-{
-    try{
-        
-        await client.connect()
-
-        console.log("Successfully connected to Redis")
-
-        app.listen(3000,()=>{
-
-            console.log("Successfully connected to port no-->",3000)
-
-        })
-
-    }catch(err)
-    {
-          console.log("Failed to connect to express server due to-->",err)
-    } 
 }
 
-
-startServer()
+startRedis();

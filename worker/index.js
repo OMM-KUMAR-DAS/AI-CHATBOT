@@ -7,11 +7,12 @@ require('dotenv').config({ path: '../.env' });
 
 
 
-const client = Redis.createClient();
+
 
 
 const publisher = Redis.createClient();
 
+const Worker = Redis.createClient()
 
 console.log(process.env.API_KEY);
 
@@ -22,23 +23,24 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-const userId = '@john123';
+// const userid="@123"
 
-async function publishtoPubSub(response) {
+async function publishtoPubSub(ans) {
     
     try {
-        const result = await model.generateContentStream(response.element);
+
+        
+        const{userid,prompt}=ans;
+
+        const result = await model.generateContentStream(prompt);
 
         for await (const chunk of result.stream) 
-        
         {
-
 
             const chunkText = chunk.text();
 
-           
-
-            await publisher.publish(`userid:${userId}`, chunkText);
+            await publisher.publish(`Userid:${userid}`, chunkText);
+            
         }
 
     }catch (err) {
@@ -52,25 +54,40 @@ async function startRedis() {
 
     try {
 
-        await client.connect();
+      
+
+        await Worker.connect();
 
         await publisher.connect();
 
-        console.log("Successfully connected Worker to Redis");
+       
+
+        console.log("Successfully initiated Worker");
+        console.log("Successfully initiated publisher");
+
+     
 
         while (true) {
 
             try {
 
+                
+                const response = await Worker.brPop('messages', 0);
+                
+                const ans= JSON.parse(response.element)
 
-                const response = await client.brPop(`userid:${userId}`, 0);
+                // const{userid,prompt}=ans;
 
-                 publishtoPubSub(response);
+                // console.log(userid)
+
+                // console.log(prompt)
+
+                publishtoPubSub(ans)
 
             } catch (err) {
 
 
-                console.log("Failed to pop prompt from queue", err);
+                console.log("operation failed due to-->", err);
 
 
             }

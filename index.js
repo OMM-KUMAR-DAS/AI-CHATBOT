@@ -28,9 +28,9 @@ wss.on('connection', async function connection(ws) {
 
         const { userid, prompt } = messageObject;
 
-        console.log(userid);
+        // console.log(userid);
 
-        console.log(prompt);
+        // console.log(prompt);
 
         currentUserid = userid;
 
@@ -51,7 +51,7 @@ wss.on('connection', async function connection(ws) {
 
     });
    
-    ws.send("Hello guys ")
+    // ws.send("Hello guys ")
 
    
 });

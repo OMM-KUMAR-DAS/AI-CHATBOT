@@ -42,6 +42,9 @@ wss.on('connection', async function connection(ws) {
 
             subscriber.subscribe(`Userid:${currentUserid}`, (message) => {
 
+                    
+                    console.log(message)
+
                     ws.send(message);
 
                 
@@ -51,13 +54,15 @@ wss.on('connection', async function connection(ws) {
 
     });
    
-    // ws.send("Hello guys ")
+   
 
    
 });
 
 async function startRedis() {
+
     try {
+
         await client.connect();
 
         console.log("Successfully connected to Redis");

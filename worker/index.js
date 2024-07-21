@@ -11,22 +11,31 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 async function publishtoPubSub(ans) {
+    
+    const { userid, prompt } = ans;
     try {
-        const { userid, prompt } = ans;
         const result = await model.generateContentStream(prompt);
 
         for await (const chunk of result.stream) {
+
             const chunkText = chunk.text();
-            await publisher.publish(`Userid:${userid}`, chunkText);
+
+            await publisher.publish(`Userid:${userid}`, JSON.stringify({type:'text',mes:chunkText}));
+
         }
     } catch (err) {
+
         console.log("Failed to publish due to -->", err);
+
+        await publisher.publish(`Userid:${userid}`, JSON.stringify({type:'error',mes:"Error occured"}))
     }
 }
 
 async function startRedis() {
     try {
+
         await Worker.connect();
+
         await publisher.connect();
 
         console.log("Successfully initiated Worker");
@@ -39,6 +48,7 @@ async function startRedis() {
                 await publishtoPubSub(ans);
             } catch (err) {
                 console.log("Operation failed due to -->", err);
+                
             }
         }
     } catch (err) {

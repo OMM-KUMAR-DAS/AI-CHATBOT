@@ -6,6 +6,7 @@ import animationData1 from '../assets/L2rgrOvj19.json';
 import animationData2 from '../assets/Animation - 1721590739434.json';
 
 function Bot() {
+
   let id = "@123omm";
 
   const [socket, setSocket] = useState(null);
@@ -21,11 +22,14 @@ function Bot() {
   const endOfMessagesRef = useRef(null)
 
   useEffect(() => {
+
     const newSocket = new WebSocket('ws://localhost:8080');
 
     newSocket.onopen = () => {
+
       console.log('Connection established');
       setSocket(newSocket);
+
     };
 
 
@@ -160,10 +164,12 @@ function Bot() {
                   <SendIcon
 
                     onClick={() => {
+
                       socket.send(JSON.stringify({
                         userid: id,
                         prompt: promptt
                       }));
+
                       setprompt('');
                     }}
                     sx={{ color: promptt ? 'green' : 'grey' }}
@@ -254,6 +260,7 @@ function Bot() {
 
 
               </React.Fragment>
+              
             ))}
 
 

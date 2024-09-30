@@ -28,7 +28,7 @@ wss.on('connection', async function connection(ws) {
 
         const { userid, prompt } = messageObject;
 
-        // console.log(userid);
+        console.log(userid);
 
         // console.log(prompt);
 

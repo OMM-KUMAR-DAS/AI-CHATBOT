@@ -13,6 +13,9 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 async function publishtoPubSub(ans) {
     
     const { userid, prompt } = ans;
+    
+    console.log(prompt)
+
     try {
         const result = await model.generateContentStream(prompt);
 

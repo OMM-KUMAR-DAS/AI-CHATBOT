@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { Box, Typography, Dialog,DialogTitle, DialogContent,DialogActions,TextField,Button } from '@mui/material'
 
@@ -7,6 +7,14 @@ import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { toast } from 'react-toastify';
+
+import Lottie from 'lottie-react';
+
+import animationData1 from '../assets/Animation - 1721596941206.json'
+
+// import animationData2 from '../assets/Animation - 1721597659246.json'
+
+
 
 const First = () => {
   
@@ -131,7 +139,13 @@ const First = () => {
 
 
 
-                               
+                                
+                                <Lottie animationData={animationData1} style={{width:'80px',marginRight:'auto'}}/>
+
+                                
+                                
+                              
+
                                 <Button type="submit" color="success" sx={{width:'25%',marginLeft:'auto',borderRadius:'25px'}}>Submit</Button>
 
                           </DialogActions>
